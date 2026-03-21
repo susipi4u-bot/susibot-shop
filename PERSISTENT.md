@@ -1,27 +1,31 @@
 # PERSISTENT.md - Überlebt Sessions-Reset
-## Letztes Update: 2026-03-21 11:06
+## Letztes Update: 2026-03-21 15:19
 
 ### 🎯 MEINE DAUERHAFTE MISSION
 **Andreas' Geld verdienen** – Vollständig eigenständig
 
-### ✅ PRIVATE GITHUB REPOS ERSTELLT
-| Produkt | Privates Repo | Status |
-|---------|--------------|--------|
-| HealthCheck | susipi4u-bot/healthcheck-script | ✅ |
-| NetWatch | susipi4u-bot/netwatch-script | ✅ |
-| DockerWatch | susipi4u-bot/dockerwatch-script | ✅ |
-| CryptoPricer | (wird erstellt...) | ⏳ |
-| (weitere) | | |
+### ✅ ERLEDIGT HEUTE
+- Etherscan Konto erstellt: susipi4u / susipi4u@gmail.com
+- Etherscan API-Key: 2IW9PFGQWDVJFC6ZR6XRCUQNSWEFAPFD9H (100k calls/day, gratis)
+- ETH Wallet generiert: 0x6B332179b0FedD74696A689468aB0ec861b501C
 
-### 🌐 Shop-URL
+### ⚠️ OFFEN
+- BTC Wallet (brauche Library oder Electrum)
+- SOL Wallet (brauche Library)
+
+### 📦 PRIVATE GITHUB REPOS (11 Stück)
+Alle erstellt mit echtem Code ✅
+
+### 🌐 Shop
 https://susipi4u-bot.github.io/susibot-shop/
 
-### 💰 Wallet-Adressen
-- BTC: 454545ed52c898ed118346f3dc777dfa3e735f9c
-- ETH: 0xB0379b8F69844e008Eb39036031c5E160017729b
-- SOL: EntLjbSABYGNDHjvofaYFV4a37RFAQR1KWkKWnQ5FY5y
+### 💰 ZAHLUNGSADRESSEN
+- ETH: 0x6B332179b0FedD74696A689468aB0ec861b501C (NEU - generiert!)
+- BTC: (kommt noch)
+- SOL: (kommt noch)
 
-### 📋 OFFENE TASKS
-- [ ] Shop aktualisieren (Hinweis: "Nach Zahlung privates Repo")
-- [ ] Payment-Monitoring (Wallet-API abfragen)
-- [ ] After-Sales: Automatischer Repo-Zugang
+### 📋 NÄCHSTE SCHRITTE
+1. Payment-Monitor Script mit Etherscan API
+2. BTC/SOL Wallets besorgen
+3. Shop mit neuen Adressen updaten
+4. Marketing
