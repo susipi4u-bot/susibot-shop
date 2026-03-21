@@ -2,59 +2,66 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Susi AI - Server Tools</title>
     <style>
         body { font-family: system-ui, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #1a1a2e; color: #eee; }
         h1 { color: #00d4ff; }
-        .product { background: #16213e; padding: 20px; margin: 15px 0; border-radius: 8px; border: 1px solid #0f3460; }
-        .product h2 { margin: 0 0 10px 0; color: #00d4ff; }
-        .price { font-size: 1.5em; color: #4ecca3; font-weight: bold; }
-        .btn { display: inline-block; background: #e94560; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 10px; }
-        .wallet { background: #0f3460; padding: 10px; margin: 5px 0; font-family: monospace; font-size: 0.85em; word-break: break-all; }
+        .product { background: #16213e; padding: 15px; margin: 10px 0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .product h2 { margin: 0; color: #00d4ff; font-size: 1.1em; }
+        .price { color: #4ecca3; font-weight: bold; }
+        .btn { background: #e94560; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; }
         .note { background: #2d4a3e; padding: 10px; border-radius: 5px; margin: 10px 0; }
     </style>
 </head>
 <body>
     <h1>🤖 Susi AI - Server & Pi Tools</h1>
-    <p>Praktische Tools für Linux-Server, Raspberry Pi & Cloud.</p>
-    <div class="note">🔒 Nach Zahlung erhältst du Zugang zum privaten GitHub-Repository mit dem vollständigen Code.</div>
-    
-    <div class="product"><h2>🖥️ ServerWatch</h2><p class="price">€14,99</p><a class="btn" href="products/serverwatch-script.html">Details</a></div>
-    <div class="product"><h2>📊 PiStats</h2><p class="price">€4,99</p><a class="btn" href="products/pistats-script.html">Details</a></div>
-    <div class="product"><h2>🐳 Docker Manager</h2><p class="price">€9,99</p><a class="btn" href="products/docker-manager.html">Details</a></div>
-    <div class="product"><h2>🌐 Network Scanner</h2><p class="price">€7,99</p><a class="btn" href="products/network-scanner.html">Details</a></div>
-    <div class="product"><h2>🌍 Website Monitor</h2><p class="price">€6,99</p><a class="btn" href="products/website-monitor.html">Details</a></div>
-    <div class="product"><h2>💾 AutoBackup</h2><p class="price">€4,99</p><a class="btn" href="products/autobackup-script.html">Details</a></div>
-    <div class="product"><h2>🔐 PassGen</h2><p class="price">€4,99</p><a class="btn" href="products/passgen-script.html">Details</a></div>
-    <div class="product"><h2>₿ CryptoPricer</h2><p class="price">€7,99</p><a class="btn" href="products/cryptopricer-script.html">Details</a></div>
-    <div class="product"><h2>🖥️ SysWatch</h2><p class="price">€4,99</p><a class="btn" href="products/syswatch-script.html">Details</a></div>
-    <div class="product"><h2>🔄 AutoRestarter</h2><p class="price">€7,99</p><a class="btn" href="products/autorestarter-script.html">Details</a></div>
-    <div class="product"><h2>📜 LogWatcher</h2><p class="price">€6,99</p><a class="btn" href="products/logwatcher-script.html">Details</a></div>
-    <div class="product"><h2>🩺 HealthCheck</h2><p class="price">€9,99</p><a class="btn" href="products/healthcheck-script.html">Details</a></div>
-    <div class="product"><h2>🐳 DockerWatch</h2><p class="price">€7,99</p><a class="btn" href="products/dockerwatch-script.html">Details</a></div>
-    <div class="product"><h2>🌐 NetWatch</h2><p class="price">€6,99</p><a class="btn" href="products/netwatch-script.html">Details</a></div>
-    <div class="product"><h2>🚀 Pi Starter Kit</h2><p class="price">€19,99</p><a class="btn" href="products/pi-starter-kit.html">Details</a></div>
-    <div class="product"><h2>☁️ Cloud Backup</h2><p class="price">€6,99</p><a class="btn" href="products/cloud-backup.html">Details</a></div>
-    <div class="product"><h2>🕐 Cron Manager</h2><p class="price">€5,99</p><a class="btn" href="products/cron-manager.html">Details</a></div>
-    <div class="product"><h2>🗄️ Database Backup</h2><p class="price">€7,99</p><a class="btn" href="products/database-backup.html">Details</a></div>
-    <div class="product"><h2>💿 Disk Cleaner</h2><p class="price">€4,99</p><a class="btn" href="products/disk-cleaner.html">Details</a></div>
-    <div class="product"><h2>🌍 DNS Checker</h2><p class="price">€4,99</p><a class="btn" href="products/dns-checker.html">Details</a></div>
-    <div class="product"><h2>🛡️ Firewall Manager</h2><p class="price">€8,99</p><a class="btn" href="products/firewall-manager.html">Details</a></div>
-    <div class="product"><h2>📝 Log Aggregator</h2><p class="price">€6,99</p><a class="btn" href="products/log-aggregator.html">Details</a></div>
-    <div class="product"><h2>📧 Mailer</h2><p class="price">€5,99</p><a class="btn" href="products/mailer.html">Details</a></div>
-    <div class="product"><h2>⚙️ Process Manager</h2><p class="price">€5,99</p><a class="btn" href="products/process-manager.html">Details</a></div>
-    <div class="product"><h2>👤 User Manager</h2><p class="price">€6,99</p><a class="btn" href="products/user-manager.html">Details</a></div>
-    <div class="product"><h2>🔒 SSH Hardener</h2><p class="price">€9,99</p><a class="btn" href="products/ssh-hardener.html">Details</a></div>
-    <div class="product"><h2>🔒 SSL Monitor</h2><p class="price">€5,99</p><a class="btn" href="products/ssl-monitor.html">Details</a></div>
-    <div class="product"><h2>📈 Metrics Collector</h2><p class="price">€7,99</p><a class="btn" href="products/metrics-collector.html">Details</a></div>
-    <div class="product"><h2>🔌 API Gateway</h2><p class="price">€12,99</p><a class="btn" href="products/api-gateway.html">Details</a></div>
-    
+    <div class="note">🔒 Nach Zahlung erhältst du Zugang zum privaten GitHub-Repository.</div>
+    <div class="product"><h2>Api Gateway</h2><span class="price">€4,99</span> <a class="btn" href="products/api-gateway.html">Details</a></div>
+    <div class="product"><h2>Autobackup</h2><span class="price">€4,99</span> <a class="btn" href="products/autobackup.html">Details</a></div>
+    <div class="product"><h2>Autobackup Script</h2><span class="price">€4,99</span> <a class="btn" href="products/autobackup-script.html">Details</a></div>
+    <div class="product"><h2>Autorestarter</h2><span class="price">€4,99</span> <a class="btn" href="products/autorestarter.html">Details</a></div>
+    <div class="product"><h2>Autorestarter Script</h2><span class="price">€4,99</span> <a class="btn" href="products/autorestarter-script.html">Details</a></div>
+    <div class="product"><h2>Cloud Backup</h2><span class="price">€4,99</span> <a class="btn" href="products/cloud-backup.html">Details</a></div>
+    <div class="product"><h2>Cron Manager</h2><span class="price">€4,99</span> <a class="btn" href="products/cron-manager.html">Details</a></div>
+    <div class="product"><h2>Cryptopricer</h2><span class="price">€4,99</span> <a class="btn" href="products/cryptopricer.html">Details</a></div>
+    <div class="product"><h2>Cryptopricer Script</h2><span class="price">€4,99</span> <a class="btn" href="products/cryptopricer-script.html">Details</a></div>
+    <div class="product"><h2>Database Backup</h2><span class="price">€4,99</span> <a class="btn" href="products/database-backup.html">Details</a></div>
+    <div class="product"><h2>Disk Cleaner</h2><span class="price">€4,99</span> <a class="btn" href="products/disk-cleaner.html">Details</a></div>
+    <div class="product"><h2>Dns Checker</h2><span class="price">€4,99</span> <a class="btn" href="products/dns-checker.html">Details</a></div>
+    <div class="product"><h2>Docker Manager</h2><span class="price">€4,99</span> <a class="btn" href="products/docker-manager.html">Details</a></div>
+    <div class="product"><h2>Dockerwatch</h2><span class="price">€4,99</span> <a class="btn" href="products/dockerwatch.html">Details</a></div>
+    <div class="product"><h2>Dockerwatch Script</h2><span class="price">€4,99</span> <a class="btn" href="products/dockerwatch-script.html">Details</a></div>
+    <div class="product"><h2>Firewall Manager</h2><span class="price">€4,99</span> <a class="btn" href="products/firewall-manager.html">Details</a></div>
+    <div class="product"><h2>Healthcheck</h2><span class="price">€4,99</span> <a class="btn" href="products/healthcheck.html">Details</a></div>
+    <div class="product"><h2>Healthcheck Script</h2><span class="price">€4,99</span> <a class="btn" href="products/healthcheck-script.html">Details</a></div>
+    <div class="product"><h2>Log Aggregator</h2><span class="price">€4,99</span> <a class="btn" href="products/log-aggregator.html">Details</a></div>
+    <div class="product"><h2>Logwatcher</h2><span class="price">€4,99</span> <a class="btn" href="products/logwatcher.html">Details</a></div>
+    <div class="product"><h2>Logwatcher Script</h2><span class="price">€4,99</span> <a class="btn" href="products/logwatcher-script.html">Details</a></div>
+    <div class="product"><h2>Mailer</h2><span class="price">€4,99</span> <a class="btn" href="products/mailer.html">Details</a></div>
+    <div class="product"><h2>Netwatch</h2><span class="price">€4,99</span> <a class="btn" href="products/netwatch.html">Details</a></div>
+    <div class="product"><h2>Netwatch Script</h2><span class="price">€4,99</span> <a class="btn" href="products/netwatch-script.html">Details</a></div>
+    <div class="product"><h2>Network Scanner</h2><span class="price">€4,99</span> <a class="btn" href="products/network-scanner.html">Details</a></div>
+    <div class="product"><h2>Passgen</h2><span class="price">€4,99</span> <a class="btn" href="products/passgen.html">Details</a></div>
+    <div class="product"><h2>Passgen Script</h2><span class="price">€4,99</span> <a class="btn" href="products/passgen-script.html">Details</a></div>
+    <div class="product"><h2>Pi Starter Kit</h2><span class="price">€4,99</span> <a class="btn" href="products/pi-starter-kit.html">Details</a></div>
+    <div class="product"><h2>Pistats</h2><span class="price">€4,99</span> <a class="btn" href="products/pistats.html">Details</a></div>
+    <div class="product"><h2>Pistats Script</h2><span class="price">€4,99</span> <a class="btn" href="products/pistats-script.html">Details</a></div>
+    <div class="product"><h2>Process Manager</h2><span class="price">€4,99</span> <a class="btn" href="products/process-manager.html">Details</a></div>
+    <div class="product"><h2>Serverwatch</h2><span class="price">€4,99</span> <a class="btn" href="products/serverwatch.html">Details</a></div>
+    <div class="product"><h2>Serverwatch Script</h2><span class="price">€4,99</span> <a class="btn" href="products/serverwatch-script.html">Details</a></div>
+    <div class="product"><h2>Service Monitor</h2><span class="price">€4,99</span> <a class="btn" href="products/service-monitor.html">Details</a></div>
+    <div class="product"><h2>Ssh Hardener</h2><span class="price">€4,99</span> <a class="btn" href="products/ssh-hardener.html">Details</a></div>
+    <div class="product"><h2>Ssl Monitor</h2><span class="price">€4,99</span> <a class="btn" href="products/ssl-monitor.html">Details</a></div>
+    <div class="product"><h2>Susibot</h2><span class="price">€4,99</span> <a class="btn" href="products/susibot.html">Details</a></div>
+    <div class="product"><h2>Syswatch</h2><span class="price">€4,99</span> <a class="btn" href="products/syswatch.html">Details</a></div>
+    <div class="product"><h2>Syswatch Script</h2><span class="price">€4,99</span> <a class="btn" href="products/syswatch-script.html">Details</a></div>
+    <div class="product"><h2>Task Scheduler</h2><span class="price">€4,99</span> <a class="btn" href="products/task-scheduler.html">Details</a></div>
+    <div class="product"><h2>User Manager</h2><span class="price">€4,99</span> <a class="btn" href="products/user-manager.html">Details</a></div>
+    <div class="product"><h2>Website Monitor</h2><span class="price">€4,99</span> <a class="btn" href="products/website-monitor.html">Details</a></div>
     <hr>
-    <h3>💳 Zahlung</h3>
-    <div class="wallet"><strong>BTC:</strong> bc1q4qf0dj8eh9qylawjrtu90sngap57hq5fjs55vk</div>
-    <div class="wallet"><strong>ETH:</strong> 0x6B332179b0FedD74696A689468aB0ec861b501C</div>
-    <div class="wallet"><strong>SOL:</strong> 4ZGDUxWSbHsSuABMEXmjdoprxfqNSeP3Ropy1DucQUo4</div>
-    <p>📧 susipi4u@gmail.com</p>
+    <h2>💳 Zahlung</h2>
+    <p>ETH: 0x6B332179b0FedD74696A689468aB0ec861b501C</p>
+    <p>BTC: bc1q4qf0dj8eh9qylawjrtu90sngap57hq5fjs55vk</p>
+    <p>SOL: 4ZGDUxWSbHsSuABMEXmjdoprxfqNSeP3Ropy1DucQUo4</p>
 </body>
 </html>
