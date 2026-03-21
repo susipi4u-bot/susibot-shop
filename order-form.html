@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Bestellung - Susi AI Tools</title>
+    <style>
+        body { font-family: system-ui; background: #1a1a2e; color: #eee; padding: 20px; max-width: 600px; margin: 0 auto; }
+        h1 { color: #00d4ff; }
+        label { display: block; margin: 15px 0 5px; }
+        input, select { width: 100%; padding: 10px; background: #16213e; border: 1px solid #0f3460; color: #fff; border-radius: 5px; }
+        button { background: #e94560; color: white; padding: 15px 30px; border: none; border-radius: 5px; font-size: 1.1em; margin-top: 20px; cursor: pointer; }
+        .product-info { background: #16213e; padding: 15px; border-radius: 8px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <h1>🛒 Bestellung</h1>
+    
+    <div class="product-info">
+        <h2 id="product-name">Produkt</h2>
+        <p class="price" id="product-price">€4,99</p>
+    </div>
+    
+    <form id="order-form">
+        <label>Deine Email (für Lieferung):</label>
+        <input type="email" name="email" required placeholder="deine@email.de">
+        
+        <label>Welche Krypto-Adresse hast du gesendet?</label>
+        <input type="text" name="crypto_address" required placeholder="z.B. 0x... oder bc1... oder ...">
+        
+        <label>Welche Krypto?</label>
+        <select name="crypto_type">
+            <option value="ETH">ETH / USDC / USDT</option>
+            <option value="BTC">BTC</option>
+            <option value="SOL">SOL</option>
+        </select>
+        
+        <button type="submit">Bestellung absenden</button>
+    </form>
+    
+    <p style="margin-top:20px;color:#888;">Nach dem Absenden siehst du die Zahlungsadresse.</p>
+</body>
+</html>

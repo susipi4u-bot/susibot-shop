@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Bestellung - Susi AI Tools</title>
+    <style>
+        body { font-family: system-ui; background: #1a1a2e; color: #eee; padding: 20px; max-width: 600px; margin: 0 auto; }
+        h1 { color: #00d4ff; }
+        .product-box { background: #16213e; padding: 20px; border-radius: 10px; margin: 20px 0; }
+        .price { color: #4ecca3; font-size: 2em; font-weight: bold; }
+        label { display: block; margin: 15px 0 5px; }
+        input { width: 100%; padding: 12px; background: #0f3460; border: none; color: #fff; border-radius: 5px; }
+        .btn { background: #e94560; color: white; padding: 15px 30px; border: none; border-radius: 5px; font-size: 1.1em; cursor: pointer; width: 100%; }
+    </style>
+</head>
+<body>
+    <h1>🛒 Bestellung</h1>
+    
+    <div class="product-box">
+        <h2 id="product-name">Produkt</h2>
+        <p class="price">€4,99</p>
+    </div>
+    
+    <form action="https://formspree.io/f/xpwzgvqy" method="POST">
+        <input type="hidden" name="product" id="product-input">
+        
+        <label>📧 Deine Email (für Lieferung):</label>
+        <input type="email" name="email" required>
+        
+        <label>🔗 Deine GitHub Username (für Repo-Zugang):</label>
+        <input type="text" name="github" required placeholder="dein-github-name">
+        
+        <label>💳 Welche Krypto-Adresse hast du gesendet?</label>
+        <input type="text" name="address" required placeholder="z.B. 0x... oder bc1...">
+        
+        <label>🪙 Welche Krypto?</label>
+        <select name="crypto" style="width:100%;padding:12px;background:#0f3460;color:#fff;border:none;border-radius:5px;">
+            <option value="ETH">ETH / USDC / USDT</option>
+            <option value="BTC">BTC</option>
+            <option value="SOL">SOL</option>
+        </select>
+        
+        <button type="submit" class="btn">Bestellung absenden</button>
+    </form>
+    
+    <p style="margin-top:20px;color:#888;font-size:0.9em;">
+        Nach dem Absenden siehst du die Zahlungsadresse.<br>
+        Nach Zahlung + Bestätigung bekommst du Repo-Zugang per Email.
+    </p>
+    
+    <script>
+        // Get product from URL
+        const params = new URLSearchParams(window.location.search);
+        const product = params.get('product') || 'Unbekannt';
+        document.getElementById('product-name').textContent = product.replace(/ /g, ' ');
+        document.getElementById('product-input').value = product;
+    </script>
+</body>
+</html>

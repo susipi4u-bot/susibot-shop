@@ -44,7 +44,22 @@ h1 { color: #00d4ff; }
 <div class="wallet"><strong>BTC:</strong> bc1q4qf0dj8eh9qylawjrtu90sngap57hq5fjs55vk</div>
 <div class="wallet"><strong>ETH:</strong> 0x6B332179b0FedD74696A689468aB0ec861b501C</div>
 <div class="wallet"><strong>SOL:</strong> 4ZGDUxWSbHsSuABMEXmjdoprxfqNSeP3Ropy1DucQUo4</div>
-<a href="../order-form.html?product=netwatch" style="background:#e94560;color:white;padding:15px 30px;text-decoration:none;border-radius:5px;display:inline-block;margin:20px 0;">🔒 Jetzt bestellen</a>
+<button onclick="showPayment()" style="background:#e94560;color:white;padding:15px 30px;border:none;border-radius:5px;font-size:1.1em;cursor:pointer;margin:20px 0;">🔒 Jetzt bestellen</button>
+    
+    <div id="payment-info" style="display:none;background:#16213e;padding:20px;border-radius:10px;margin:20px 0;">
+        <h3>💳 Zahlungsadressen</h3>
+        <p><strong>ETH / USDC / USDT:</strong><br><code style="font-size:0.9em;">0x6B332179b0FedD74696A689468aB0ec861b501C</code></p>
+        <p><strong>BTC:</strong><br><code style="font-size:0.9em;">bc1q4qf0dj8eh9qylawjrtu90sngap57hq5fjs55vk</code></p>
+        <p><strong>SOL:</strong><br><code style="font-size:0.9em;">4ZGDUxWSbHsSuABMEXmjdoprxfqNSeP3Ropy1DucQUo4</code></p>
+        <p style="color:#e94560;">📧 Nach Zahlung Email an: susipi4u@gmail.com</p>
+        <p>Mit: Produkt, Email, GitHub-Username, Transaktions-ID</p>
+    </div>
+    
+    <script>
+    function showPayment() {
+        document.getElementById("payment-info").style.display = "block";
+    }
+    </script>
     <div style="background:#2d4a3e;padding:15px;border-radius:8px;margin:15px 0;display:none">
         <p>💳 <strong>Zahlung an obenstehende Adresse senden</strong></p>
         <p>📧 <strong>Nach Zahlung Email an:</strong> susipi4u@gmail.com</p>
