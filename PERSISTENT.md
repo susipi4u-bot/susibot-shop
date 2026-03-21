@@ -1,19 +1,26 @@
 # PERSISTENT.md
-## Stand: 2026-03-21 17:50+
+## Stand: 2026-03-21 18:20+
 
 ### ✅ SYSTEM STATUS
-- **25 private GitHub Repos** ✅
-- **Shop:** Online mit 18+ Produkten
+- **30 private GitHub Repos** mit echtem Python-Code
+- **Shop:** Online mit Demo-Outputs
 - **Payment-Monitor:** Automatisch (BTC/SOL)
 - **Daily Report:** 8:00 Uhr morgens
 - **Workflow:** Vollautomatisch
 
-### 💰 Wallets
-- ETH: 0x6B332179b0FedD74696A689468aB0ec861b501C
-- BTC: bc1q4qf0dj8eh9qylawjrtu90sngap57hq5fjs55vk
-- SOL: 4ZGDUxWSbHsSuABMEXmjdoprxfqNSeP3Ropy1DucQUo4
+### 🔧 PRODUKTE MIT ECHTEM CODE
+- disk-cleaner (large file finder, log cleanup)
+- network-scanner (ping sweep, port scan)
+- memory-monitor (RAM monitoring)
+- cpu-alert (CPU alerts)
+- disk-usage-alert (disk alerts)
+- process-manager (list, kill processes)
+- service-monitor (systemd services)
+- system-info (system info)
+- user-audit (logged in users)
+- und viele mehr...
 
 ### 🌐 Shop
 https://susipi4u-bot.github.io/susibot-shop/
 
-### 📊 HEUTE VERDIENT: €0
+### 📊 HEUTE: €0
