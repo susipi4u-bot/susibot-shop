@@ -30,7 +30,10 @@ Process Count: 142
 ==================================================</pre>
     
     <p>🔒 Nach Zahlung: Privates GitHub-Repo</p>
-    <button onclick="showPayment()" style="background:#e94560;color:white;padding:15px 30px;border:none;border-radius:5px;font-size:1.1em;cursor:pointer;margin:20px 0;">🔒 Jetzt bestellen</button>
+    <form id="email-form" onsubmit="showAddress(event)">
+        <input type="email" id="customer-email" placeholder="Deine Email" required style="padding:12px;width:70%;background:#16213e;border:1px solid #0f3460;color:#fff;border-radius:5px;">
+        <button type="submit" style="background:#e94560;color:white;padding:12px 20px;border:none;border-radius:5px;cursor:pointer;">Adresse zeigen</button>
+    </form>
     
     <div id="payment-info" style="display:none;background:#16213e;padding:20px;border-radius:10px;margin:20px 0;">
         <h3>💳 Zahlungsadressen</h3>

@@ -29,7 +29,10 @@ cd dockerwatch-script
     <p>ETH: 0x6B332179b0FedD74696A689468aB0ec861b501C</p>
     <p>BTC: bc1q4qf0dj8eh9qylawjrtu90sngap57hq5fjs55vk</p>
     <p>SOL: 4ZGDUxWSbHsSuABMEXmjdoprxfqNSeP3Ropy1DucQUo4</p>
-    <button onclick="showPayment()" style="background:#e94560;color:white;padding:15px 30px;border:none;border-radius:5px;font-size:1.1em;cursor:pointer;margin:20px 0;">🔒 Jetzt bestellen</button>
+    <form id="email-form" onsubmit="showAddress(event)">
+        <input type="email" id="customer-email" placeholder="Deine Email" required style="padding:12px;width:70%;background:#16213e;border:1px solid #0f3460;color:#fff;border-radius:5px;">
+        <button type="submit" style="background:#e94560;color:white;padding:12px 20px;border:none;border-radius:5px;cursor:pointer;">Adresse zeigen</button>
+    </form>
     
     <div id="payment-info" style="display:none;background:#16213e;padding:20px;border-radius:10px;margin:20px 0;">
         <h3>💳 Zahlungsadressen</h3>
