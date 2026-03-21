@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Susi AI Tools - Shop</title>
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-firestore.js"></script>
+    <style>
+        body { font-family: system-ui; background: #1a1a2e; color: #eee; margin: 0; }
+        header { background: #16213e; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        h1 { color: #00d4ff; margin: 0; }
+        .auth-btn { background: #e94560; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .product { background: #16213e; padding: 20px; border-radius: 10px; }
+        .product h2 { color: #00d4ff; margin: 0 0 10px; }
+        .price { color: #4ecca3; font-size: 1.5em; font-weight: bold; }
+        .add-btn { background: #e94560; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px; width: 100%; }
+        #cart { position: fixed; bottom: 20px; right: 20px; background: #e94560; padding: 15px 25px; border-radius: 50px; cursor: pointer; }
+        #auth-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; }
+        .modal-content { background: #16213e; padding: 40px; border-radius: 10px; width: 300px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; background: #0f3460; border: none; color: white; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🤖 Susi AI Shop</h1>
+        <div id="user-info">
+            <button class="auth-btn" onclick="showAuth()">Login / Registrieren</button>
+        </div>
+    </header>
+    
+    <div class="product-grid" id="products">
+        <!-- Products loaded from Firebase -->
+    </div>
+    
+    <div id="cart" onclick="showCart()">
+        🛒 Warenkorb (<span id="cart-count">0</span>)
+    </div>
+    
+    <div id="auth-modal">
+        <div class="modal-content">
+            <h2 id="auth-title">Login</h2>
+            <input type="email" id="email" placeholder="Email">
+            <input type="password" id="password" placeholder="Passwort">
+            <button class="auth-btn" onclick="handleAuth()" style="width:100%">Absenden</button>
+            <p style="text-align:center;margin-top:10px;cursor:pointer;" onclick="toggleAuth()">oder registrieren</p>
+            <p style="text-align:center;cursor:pointer;" onclick="document.getElementById('auth-modal').style.display='none'">Schließen</p>
+        </div>
+    </div>
+    
+    <script>
+        // Products data (would come from Firebase in production)
+        const products = [
+            {id: 1, name: 'ServerWatch', price: 14.99, desc: 'Server Monitoring'},
+            {id: 2, name: 'PiStats', price: 4.99, desc: 'Raspberry Pi Stats'},
+            {id: 3, name: 'AutoBackup', price: 4.99, desc: 'Automatisches Backup'},
+            {id: 4, name: 'HealthCheck', price: 9.99, desc: 'Server Health Check'},
+            {id: 5, name: 'Docker Manager', price: 9.99, desc: 'Docker Container Management'},
+            {id: 6, name: 'Network Scanner', price: 7.99, desc: 'Netzwerk Scanner'},
+        ];
+        
+        let cart = [];
+        let isRegister = false;
+        
+        function renderProducts() {
+            const grid = document.getElementById('products');
+            grid.innerHTML = products.map(p => `
+                <div class="product">
+                    <h2>${p.name}</h2>
+                    <p>${p.desc}</p>
+                    <p class="price">€${p.price}</p>
+                    <button class="add-btn" onclick="addToCart(${p.id})">In den Warenkorb</button>
+                </div>
+            `).join('');
+        }
+        
+        function addToCart(id) {
+            cart.push(products.find(p => p.id === id));
+            document.getElementById('cart-count').innerText = cart.length;
+        }
+        
+        function showAuth() {
+            document.getElementById('auth-modal').style.display = 'flex';
+        }
+        
+        function toggleAuth() {
+            isRegister = !isRegister;
+            document.getElementById('auth-title').innerText = isRegister ? 'Registrieren' : 'Login';
+        }
+        
+        function handleAuth() {
+            // Firebase auth would go here
+            alert('Firebase Auth: ' + (isRegister ? 'Registrierung' : 'Login') + ' würde hier passieren');
+            document.getElementById('auth-modal').style.display = 'none';
+        }
+        
+        function showCart() {
+            if (cart.length === 0) {
+                alert('Warenkorb ist leer!');
+                return;
+            }
+            const total = cart.reduce((sum, p) => sum + p.price, 0);
+            alert('Warenkorb: ' + cart.map(p => p.name).join(', ') + '\n\nSumme: €' + total.toFixed(2) + '\n\nStripe Checkout würde hier starten!');
+        }
+        
+        renderProducts();
+    </script>
+</body>
+</html>
