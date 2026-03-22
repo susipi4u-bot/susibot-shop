@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <title>Init Products</title>
+ <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+ <h1>Produkte werden hinzugefügt...</h1>
+ <div id="status"></div>
+ <script>
+ const firebaseConfig = {
+   apiKey: "AIzaSyAyv3r-TC6cNuk9Dp655K79h2K4L-9tZAs",
+   authDomain: "susibot-shop.firebaseapp.com",
+   projectId: "susibot-shop",
+   storageBucket: "susibot-shop.firebasestorage.app",
+   messagingSenderId: "171492719283",
+   appId: "1:171492719283:web:2f2053d340573d1f594ec6"
+ };
+
+ firebase.initializeApp(firebaseConfig);
+ const db = firebase.firestore();
+
+ const products = [
+   {
+     id: "serverwatch",
+     name: "ServerWatch",
+     price: 14.99,
+     desc: "Umfassendes Server-Monitoring-Tool",
+     category: "Server",
+     platform: "Linux, Raspberry Pi",
+     features: [
+       "CPU-, RAM- und Disk-Überwachung",
+       "Benachrichtigungen bei Problemen",
+       "Web-Dashboard",
+       "Historische Daten"
+     ],
+     installation: "pip install serverwatch",
+     requirements: "Python 3.8+, Linux"
+   },
+   {
+     id: "pistats",
+     name: "PiStats",
+     price: 4.99,
+     desc: "Raspberry Pi System-Monitoring",
+     category: "Hardware",
+     platform: "Raspberry Pi OS",
+     features: [
+       "CPU-Temperatur",
+       "Speichernutzung",
+       "Netzwerk-Statistiken",
+       "GPIO-Status"
+     ],
+     installation: "pip install pistats",
+     requirements: "Raspberry Pi mit Python 3"
+   },
+   {
+     id: "autobackup",
+     name: "AutoBackup",
+     price: 4.99,
+     desc: "Automatische Backup-Lösung",
+     category: "Sicherheit",
+     platform: "Linux, macOS, Windows",
+     features: [
+       "Automatische Sicherungen",
+       "Inkrementelle Backups",
+       "Cloud-Storage Support",
+       "Backup-Rotation"
+     ],
+     installation: "pip install autobackup",
+     requirements: "Python 3.6+"
+   },
+   {
+     id: "healthcheck",
+     name: "HealthCheck",
+     price: 9.99,
+     desc: "Server Health Monitoring",
+     category: "Server",
+     platform: "Linux Server",
+     features: [
+       "Service-Status prüfen",
+       "SSL-Zertifikat Monitoring",
+       "Port-Checks",
+       "Alerting-System"
+     ],
+     installation: "pip install healthcheck",
+     requirements: "Python 3.8+, Linux"
+   },
+   {
+     id: "dockermanager",
+     name: "Docker Manager",
+     price: 9.99,
+     desc: "Docker Container Management",
+     category: "DevOps",
+     platform: "Linux mit Docker",
+     features: [
+       "Container-Übersicht",
+       "Start/Stop/Restart",
+       "Log-Viewer",
+       "Resource-Monitoring"
+     ],
+     installation: "pip install dockermanager",
+     requirements: "Docker, Python 3.8+"
+   },
+   {
+     id: "networkscanner",
+     name: "Network Scanner",
+     price: 7.99,
+     desc: "Netzwerk-Scanner Tool",
+     category: "Netzwerk",
+     platform: "Linux, macOS, Windows",
+     features: [
+       "IP-Scan",
+       "Port-Scan",
+       "Geräte-Erkennung",
+       "Netzwerk-Map"
+     ],
+     installation: "pip install networkscanner",
+     requirements: "Python 3.6+, nmap"
+   },
+   {
+     id: "susibot",
+     name: "SusiBot",
+     price: 9.99,
+     desc: "Telegram Bot Assistent",
+     category: "Bot",
+     platform: "Linux, Cloud",
+     features: [
+       "Automatisierte Antworten",
+       "Notizen & Erinnerungen",
+       "Webhooks",
+       "Statistiken"
+     ],
+     installation: "git clone && pip install -r requirements.txt",
+     requirements: "Python 3.8+, Telegram Bot Token"
+   },
+   {
+     id: "logwatcher",
+     name: "LogWatcher",
+     price: 6.99,
+     desc: "Log-Datei Monitoring",
+     category: "DevOps",
+     platform: "Linux Server",
+     features: [
+       "Echtzeit Log-Überwachung",
+       "Fehler-Erkennung",
+       "Alert bei kritischen Events",
+       "Log-Rotation"
+     ],
+     installation: "pip install logwatcher",
+     requirements: "Python 3.8+"
+   },
+   {
+     id: "passgen",
+     name: "PassGen",
+     price: 4.99,
+     desc: "Password Generator",
+     category: "Sicherheit",
+     platform: "Alle",
+     features: [
+       "Sichere Passwörter",
+       "Passwort-Stärke prüfen",
+       "CLI & GUI",
+       "Passwort-Tresor"
+     ],
+     installation: "pip install passgen",
+     requirements: "Python 3.6+"
+   },
+   {
+     id: "autorestarter",
+     name: "AutoRestarter",
+     price: 7.99,
+     desc: "Service Auto-Restart Tool",
+     category: "DevOps",
+     platform: "Linux Server",
+     features: [
+       "Automatischer Neustart",
+       "Health-Checks",
+       "Crash-Recovery",
+       "Logging"
+     ],
+     installation: "pip install autorestarter",
+     requirements: "Python 3.8+, systemd"
+   }
+ ];
+
+ async function initProducts() {
+   const status = document.getElementById('status');
+   
+   try {
+     // Clear existing products
+     const existing = await db.collection('products').get();
+     for (const doc of existing.docs) {
+       await doc.ref.delete();
+     }
+     status.innerHTML += 'Alte Produkte gelöscht<br>';
+     
+     // Add new products
+     for (const product of products) {
+       await db.collection('products').doc(product.id).set(product);
+       status.innerHTML += `✓ ${product.name} hinzugefügt<br>`;
+     }
+     
+     status.innerHTML += '<h2>Alle Produkte wurden hinzugefügt!</h2>';
+   } catch (error) {
+     status.innerHTML += '<h2 style="color:red">Fehler: ' + error.message + '</h2>';
+   }
+ }
+
+ initProducts();
+ </script>
+</body>
+</html>

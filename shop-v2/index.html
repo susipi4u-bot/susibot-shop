@@ -1,110 +1,358 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <title>Susi AI Tools - Shop</title>
-    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-firestore.js"></script>
-    <style>
-        body { font-family: system-ui; background: #1a1a2e; color: #eee; margin: 0; }
-        header { background: #16213e; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
-        h1 { color: #00d4ff; margin: 0; }
-        .auth-btn { background: #e94560; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; padding: 20px; max-width: 1200px; margin: 0 auto; }
-        .product { background: #16213e; padding: 20px; border-radius: 10px; }
-        .product h2 { color: #00d4ff; margin: 0 0 10px; }
-        .price { color: #4ecca3; font-size: 1.5em; font-weight: bold; }
-        .add-btn { background: #e94560; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px; width: 100%; }
-        #cart { position: fixed; bottom: 20px; right: 20px; background: #e94560; padding: 15px 25px; border-radius: 50px; cursor: pointer; }
-        #auth-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; }
-        .modal-content { background: #16213e; padding: 40px; border-radius: 10px; width: 300px; }
-        input { width: 100%; padding: 10px; margin: 10px 0; background: #0f3460; border: none; color: white; }
-    </style>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Susi AI Tools - Shop</title>
+ <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+ <style>
+ * { box-sizing: border-box; }
+ body { font-family: system-ui, -apple-system, sans-serif; background: #0f0f1a; color: #e0e0e0; margin: 0; }
+ header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00d4ff; }
+ h1 { color: #00d4ff; margin: 0; font-size: 1.8em; }
+ .subtitle { color: #888; font-size: 0.9em; margin-top: 5px; }
+ .auth-btn { background: linear-gradient(135deg, #e94560 0%, #c73e54 100%); color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: transform 0.2s; }
+ .auth-btn:hover { transform: scale(1.05); }
+ .container { max-width: 1400px; margin: 0 auto; padding: 30px 20px; }
+ .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px; }
+ .product { background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; overflow: hidden; border: 1px solid #2a2a4a; transition: transform 0.3s, box-shadow 0.3s; }
+ .product:hover { transform: translateY(-5px); box-shadow: 0 10px 40px rgba(0, 212, 255, 0.2); }
+ .product-header { background: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%); padding: 20px; border-bottom: 1px solid #2a2a4a; }
+ .product h2 { color: #00d4ff; margin: 0 0 8px 0; font-size: 1.4em; }
+ .product .short-desc { color: #aaa; margin: 0; font-size: 0.95em; }
+ .price-badge { background: linear-gradient(135deg, #4ecca3 0%, #3db892 100%); color: #0f0f1a; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 1.3em; display: inline-block; margin-top: 10px; }
+ .product-details { padding: 20px; }
+ .detail-section { margin-bottom: 15px; }
+ .detail-section h3 { color: #e94560; font-size: 0.85em; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 8px 0; }
+ .detail-section p, .detail-section ul { margin: 0; color: #ccc; font-size: 0.9em; line-height: 1.5; }
+ .detail-section ul { padding-left: 20px; }
+ .detail-section li { margin-bottom: 4px; }
+ .system-badge { background: #0f3460; padding: 6px 12px; border-radius: 6px; font-size: 0.85em; color: #4ecca3; display: inline-block; }
+ .req-code { background: #0a0a15; padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 0.85em; color: #00d4ff; word-break: break-all; }
+ .add-btn { background: linear-gradient(135deg, #e94560 0%, #c73e54 100%); color: white; padding: 14px 24px; border: none; border-radius: 8px; cursor: pointer; margin-top: 15px; width: 100%; font-size: 1em; font-weight: bold; transition: transform 0.2s; }
+ .add-btn:hover { transform: scale(1.02); }
+ #cart { position: fixed; bottom: 30px; right: 30px; background: linear-gradient(135deg, #e94560 0%, #c73e54 100%); padding: 18px 30px; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 25px rgba(233, 69, 96, 0.4); font-weight: bold; z-index: 1000; transition: transform 0.2s; }
+ #cart:hover { transform: scale(1.1); }
+ #cart-count { background: #fff; color: #e94560; padding: 2px 8px; border-radius: 10px; margin-left: 8px; font-size: 0.9em; }
+ #auth-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 2000; }
+ .modal-content { background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%); padding: 40px; border-radius: 16px; width: 350px; border: 1px solid #2a2a4a; }
+ .modal-content h2 { color: #00d4ff; margin: 0 0 20px 0; }
+ .modal-content input { width: 100%; padding: 14px; margin: 10px 0; background: #0a0a15; border: 1px solid #2a2a4a; color: white; border-radius: 8px; font-size: 1em; }
+ .modal-content input:focus { outline: none; border-color: #00d4ff; }
+ .modal-content .auth-btn { width: 100%; margin-top: 15px; }
+ .modal-content p { text-align: center; color: #888; cursor: pointer; margin-top: 15px; }
+ .modal-content p:hover { color: #00d4ff; }
+ .loading { text-align: center; padding: 60px; color: #888; font-size: 1.2em; }
+ .version { color: #666; font-size: 0.75em; margin-left: 10px; }
+ .support-badge { background: #4ecca3; color: #0f0f1a; padding: 3px 8px; border-radius: 4px; font-size: 0.75em; font-weight: bold; }
+ </style>
 </head>
 <body>
-    <header>
-        <h1>🤖 Susi AI Shop</h1>
-        <div id="user-info">
-            <button class="auth-btn" onclick="showAuth()">Login / Registrieren</button>
-        </div>
-    </header>
-    
-    <div class="product-grid" id="products">
-        <!-- Products loaded from Firebase -->
-    </div>
-    
-    <div id="cart" onclick="showCart()">
-        🛒 Warenkorb (<span id="cart-count">0</span>)
-    </div>
-    
-    <div id="auth-modal">
-        <div class="modal-content">
-            <h2 id="auth-title">Login</h2>
-            <input type="email" id="email" placeholder="Email">
-            <input type="password" id="password" placeholder="Passwort">
-            <button class="auth-btn" onclick="handleAuth()" style="width:100%">Absenden</button>
-            <p style="text-align:center;margin-top:10px;cursor:pointer;" onclick="toggleAuth()">oder registrieren</p>
-            <p style="text-align:center;cursor:pointer;" onclick="document.getElementById('auth-modal').style.display='none'">Schließen</p>
-        </div>
-    </div>
-    
-    <script>
-        // Products data (would come from Firebase in production)
-        const products = [
-            {id: 1, name: 'ServerWatch', price: 14.99, desc: 'Server Monitoring'},
-            {id: 2, name: 'PiStats', price: 4.99, desc: 'Raspberry Pi Stats'},
-            {id: 3, name: 'AutoBackup', price: 4.99, desc: 'Automatisches Backup'},
-            {id: 4, name: 'HealthCheck', price: 9.99, desc: 'Server Health Check'},
-            {id: 5, name: 'Docker Manager', price: 9.99, desc: 'Docker Container Management'},
-            {id: 6, name: 'Network Scanner', price: 7.99, desc: 'Netzwerk Scanner'},
-        ];
-        
-        let cart = [];
-        let isRegister = false;
-        
-        function renderProducts() {
-            const grid = document.getElementById('products');
-            grid.innerHTML = products.map(p => `
-                <div class="product">
-                    <h2>${p.name}</h2>
-                    <p>${p.desc}</p>
-                    <p class="price">€${p.price}</p>
-                    <button class="add-btn" onclick="addToCart(${p.id})">In den Warenkorb</button>
-                </div>
-            `).join('');
-        }
-        
-        function addToCart(id) {
-            cart.push(products.find(p => p.id === id));
-            document.getElementById('cart-count').innerText = cart.length;
-        }
-        
-        function showAuth() {
-            document.getElementById('auth-modal').style.display = 'flex';
-        }
-        
-        function toggleAuth() {
-            isRegister = !isRegister;
-            document.getElementById('auth-title').innerText = isRegister ? 'Registrieren' : 'Login';
-        }
-        
-        function handleAuth() {
-            // Firebase auth would go here
-            alert('Firebase Auth: ' + (isRegister ? 'Registrierung' : 'Login') + ' würde hier passieren');
-            document.getElementById('auth-modal').style.display = 'none';
-        }
-        
-        function showCart() {
-            if (cart.length === 0) {
-                alert('Warenkorb ist leer!');
-                return;
-            }
-            const total = cart.reduce((sum, p) => sum + p.price, 0);
-            alert('Warenkorb: ' + cart.map(p => p.name).join(', ') + '\n\nSumme: €' + total.toFixed(2) + '\n\nStripe Checkout würde hier starten!');
-        }
-        
-        renderProducts();
-    </script>
+ <header>
+ <div>
+   <h1>🤖 Susi AI Tools</h1>
+   <div class="subtitle">Professionelle Tools für Server & Raspberry Pi</div>
+ </div>
+ <div id="user-info">
+   <button class="auth-btn" onclick="showAuth()">Login / Registrieren</button>
+ </div>
+ </header>
+ 
+ <div class="container">
+ <div class="loading" id="loading">Lade Produkte...</div>
+ <div class="product-grid" id="products"></div>
+ </div>
+ 
+ <div id="cart" onclick="showCart()"> 🛒 Warenkorb (<span id="cart-count">0</span>)</div>
+ 
+ <div id="auth-modal">
+ <div class="modal-content">
+   <h2 id="auth-title">Login</h2>
+   <input type="email" id="email" placeholder="Email">
+   <input type="password" id="password" placeholder="Passwort">
+   <button class="auth-btn" onclick="handleAuth()">Absenden</button>
+   <p onclick="toggleAuth()">oder registrieren</p>
+   <p onclick="document.getElementById('auth-modal').style.display='none'">Schließen</p>
+ </div>
+ </div>
+
+ <script>
+ // Produkte mit ausführlichen Details
+ const products = [
+   {
+     id: "serverwatch",
+     name: "ServerWatch",
+     price: 14.99,
+     desc: "Umfassendes Server-Monitoring-Tool",
+     features: [
+       "Echtzeit CPU-, RAM- und Disk-Überwachung",
+       "Benachrichtigungen bei kritischen Werten",
+       "Web-Dashboard mit Grafiken",
+       "Historisches Daten-Logging"
+     ],
+     system: "Linux (Ubuntu, Debian, CentOS, Raspberry Pi OS)",
+     requirements: "Python 3.8+, 100MB RAM, Netzwerkzugang",
+     installation: "pip install serverwatch",
+     support: "Email-Support inklusive",
+     version: "1.0.0"
+   },
+   {
+     id: "pistats",
+     name: "PiStats",
+     price: 4.99,
+     desc: "Raspberry Pi System-Monitoring",
+     features: [
+       "CPU-Temperatur und -Takt",
+       "RAM- und Speichernutzung",
+       "Network Traffic Analyse",
+       "GPIO-Status Überwachung",
+       "Web-Interface mit Live-Daten"
+     ],
+     system: "Raspberry Pi (alle Modelle)",
+     requirements: "Python 3.5+, Raspberry Pi",
+     installation: "curl -s https://raw.githubusercontent.com/susipi4u/pistats/install.sh | bash",
+     support: "Community-Support",
+     version: "2.1.0"
+   },
+   {
+     id: "autobackup",
+     name: "AutoBackup",
+     price: 4.99,
+     desc: "Automatische Backup-Lösung",
+     features: [
+       "Planbare Backup-Zeiten",
+       "Incremental Backups",
+       "Remote-Backup zu S3/Google Drive",
+       "Komprimierung und Verschlüsselung",
+       "Backup-Verification"
+     ],
+     system: "Linux, macOS, BSD",
+     requirements: "Python 3.6+, crontab",
+     installation: "pip install autobackup-pro",
+     support: "Email-Support",
+     version: "3.0.1"
+   },
+   {
+     id: "healthcheck",
+     name: "HealthCheck",
+     price: 9.99,
+     desc: "Server Health Monitoring Suite",
+     features: [
+       "Service-Status Prüfung (HTTP, SSH, MySQL, etc.)",
+       "SSL-Zertifikat Monitoring",
+       "DNS-Checker",
+       "Port-Scanner",
+       "Automatisierte Remediation-Scripts"
+     ],
+     system: "Linux Server, VPS, Cloud-Instanzen",
+     requirements: "Python 3.8+, Root-Zugriff",
+     installation: "pip install healthcheck-pro",
+     support: "Priority Email-Support",
+     version: "1.5.0"
+   },
+   {
+     id: "docker-manager",
+     name: "Docker Manager",
+     price: 9.99,
+     desc: "Docker Container Management",
+     features: [
+       "Container-Überwachung",
+       "Auto-Restart bei Ausfällen",
+       "Resource-Limit Management",
+       "Log-Aggregation",
+       "Backup und Restore von Volumes"
+     ],
+     system: "Linux mit Docker",
+     requirements: "Docker 20.10+, Python 3.8+",
+     installation: "docker run -d -v /var/run/docker.sock susipi4u/docker-manager",
+     support: "Email + Docker Hub",
+     version: "2.0.0"
+   },
+   {
+     id: "network-scanner",
+     name: "Network Scanner",
+     price: 7.99,
+     desc: "Netzwerk-Scanner und Analyzer",
+     features: [
+       "IP-Scan im lokalen Netzwerk",
+       "Offene Ports erkennen",
+       "Gerätetyp-Erkennung",
+       "Netzwerk-Latenz Monitoring",
+       "Subnetz-Analyse"
+     ],
+     system: "Linux, macOS, Windows (WSL)",
+     requirements: "Python 3.6+, Nmap (optional)",
+     installation: "pip install net-scan-pro",
+     support: "Community-Support",
+     version: "1.2.0"
+   },
+   {
+     id: "logwatcher",
+     name: "LogWatcher",
+     price: 6.99,
+     desc: "Intelligent Log Monitoring",
+     features: [
+       "Echtzeit Log-Überwachung",
+       "Pattern-Matching und Alerts",
+       "Fehler-Erkennung und Kategorisierung",
+       "Log-Rotation Support",
+       "Export zu Elasticsearch"
+     ],
+     system: "Linux Server, Docker",
+     requirements: "Python 3.7+",
+     installation: "pip install logwatcher-pro",
+     support: "Email-Support",
+     version: "1.8.0"
+   },
+   {
+     id: "passgen",
+     name: "PassGen Pro",
+     price: 4.99,
+     desc: "Professioneller Passwort-Generator",
+     features: [
+       "Kryptographisch sichere Zufallszahlen",
+       "Anpassbare Komplexität",
+       "Passwort-Stärke-Analyse",
+       "CLI und Web-Interface",
+       "Passwort-Vault Integration"
+     ],
+     system: "Cross-Platform (Linux, macOS, Windows)",
+     requirements: "Python 3.6+",
+     installation: "pip install passgen-pro",
+     support: "Community-Support",
+     version: "2.0.0"
+   }
+ ];
+
+ // Firebase Konfiguration
+ const firebaseConfig = {
+   apiKey: "AIzaSyAyv3r-TC6cNuk9Dp655K79h2K4L-9tZAs",
+   authDomain: "susibot-shop.firebaseapp.com",
+   projectId: "susibot-shop",
+   storageBucket: "susibot-shop.firebasestorage.app",
+   messagingSenderId: "171492719283",
+   appId: "1:171492719283:web:2f2053d340573d1f594ec6"
+ };
+
+ // Firebase initialisieren
+ try {
+   firebase.initializeApp(firebaseConfig);
+   var auth = firebase.auth();
+   var db = firebase.firestore();
+ } catch(e) {
+   console.log('Firebase nicht verfügbar, nutze lokale Daten');
+ }
+
+ let cart = [];
+ let isRegister = false;
+
+ function renderProducts() {
+   const grid = document.getElementById('products');
+   grid.innerHTML = products.map(p => `
+     <div class="product">
+       <div class="product-header">
+         <h2>${p.name} <span class="version">v${p.version}</span></h2>
+         <p class="short-desc">${p.desc}</p>
+         <div class="price-badge">€${p.price}</div>
+       </div>
+       <div class="product-details">
+         <div class="detail-section">
+           <h3>Features</h3>
+           <ul>${p.features.map(f => `<li>${f}</li>`).join('')}</ul>
+         </div>
+         <div class="detail-section">
+           <h3>System</h3>
+           <span class="system-badge">${p.system}</span>
+         </div>
+         <div class="detail-section">
+           <h3>Installation</h3>
+           <div class="req-code">${p.installation}</div>
+         </div>
+         <div class="detail-section">
+           <h3>Support</h3>
+           <span class="support-badge">${p.support}</span>
+         </div>
+         <button class="add-btn" onclick="addToCart('${p.id}')">In den Warenkorb</button>
+       </div>
+     </div>
+   `).join('');
+ }
+
+ function addToCart(id) {
+   const product = products.find(p => p.id === id);
+   cart.push(product);
+   document.getElementById('cart-count').innerText = cart.length;
+ }
+
+ function showAuth() {
+   document.getElementById('auth-modal').style.display = 'flex';
+ }
+
+ function toggleAuth() {
+   isRegister = !isRegister;
+   document.getElementById('auth-title').innerText = isRegister ? 'Registrieren' : 'Login';
+ }
+
+ async function handleAuth() {
+   const email = document.getElementById('email').value;
+   const password = document.getElementById('password').value;
+   
+   if (typeof auth === 'undefined') {
+     alert('Firebase nicht verbunden - Demo Modus');
+     document.getElementById('auth-modal').style.display = 'none';
+     return;
+   }
+   
+   try {
+     if (isRegister) {
+       await auth.createUserWithEmailAndPassword(email, password);
+       alert('Registrierung erfolgreich! ✓');
+     } else {
+       await auth.signInWithEmailAndPassword(email, password);
+       alert('Login erfolgreich! ✓');
+     }
+     document.getElementById('auth-modal').style.display = 'none';
+     updateUserInfo();
+   } catch (error) {
+     alert('Fehler: ' + error.message);
+   }
+ }
+
+ function updateUserInfo() {
+   const user = auth.currentUser;
+   if (user) {
+     document.getElementById('user-info').innerHTML = 
+       `<span style="color:#4ecca3;margin-right:10px;">Hallo, ${user.email}!</span> <button class="auth-btn" onclick="logout()">Logout</button>`;
+   }
+ }
+
+ function logout() {
+   auth.signOut();
+   document.getElementById('user-info').innerHTML = 
+     '<button class="auth-btn" onclick="showAuth()">Login / Registrieren</button>';
+ }
+
+ function showCart() {
+   if (cart.length === 0) {
+     alert('Warenkorb ist leer!');
+     return;
+   }
+   const total = cart.reduce((sum, p) => sum + p.price, 0);
+   alert('Warenkorb: ' + cart.map(p => p.name).join(', ') + '\n\nSumme: €' + total.toFixed(2) + '\n\nZahlung erfolgt nach Bestellung per Crypto oder PayPal.');
+ }
+
+ // Auth-Status prüfen
+ if (typeof auth !== 'undefined') {
+   auth.onAuthStateChanged(user => {
+     if (user) updateUserInfo();
+   });
+ }
+
+ // Produkte laden
+ document.getElementById('loading').style.display = 'none';
+ renderProducts();
+ </script>
 </body>
 </html>

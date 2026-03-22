@@ -1,13 +1,13 @@
 // shop-v2/firebase-config.js
-// Firebase Konfiguration - werde ich aus der Console holen
-
+// Firebase Konfiguration - aus der Console geholt
 const firebaseConfig = {
-  apiKey: "DEINE_API_KEY",
+  apiKey: "AIzaSyAyv3r-TC6cNuk9Dp655K79h2K4L-9tZAs",
   authDomain: "susibot-shop.firebaseapp.com",
   projectId: "susibot-shop",
-  storageBucket: "susibot-shop.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abc123"
+  storageBucket: "susibot-shop.firebasestorage.app",
+  messagingSenderId: "171492719283",
+  appId: "1:171492719283:web:2f2053d340573d1f594ec6",
+  measurementId: "G-M16BQETJWW"
 };
 
 // Initialisiere Firebase
