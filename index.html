@@ -1,106 +1,358 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <title>Susi AI - Server Tools (58 Produkte)</title>
-    <style>
-        body { font-family: system-ui, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #1a1a2e; color: #eee; }
-        h1 { color: #00d4ff; }
-        .product { background: #16213e; padding: 12px; margin: 8px 0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .product h2 { margin: 0; color: #00d4ff; font-size: 1em; }
-        .price { color: #4ecca3; font-weight: bold; margin: 0 10px; }
-        .btn { background: #e94560; color: white; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 0.9em; }
-        .note { background: #2d4a3e; padding: 10px; border-radius: 5px; margin: 10px 0; }
-        .wallet { font-family: monospace; font-size: 0.85em; word-break: break-all; }
-    </style>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Susi AI Tools - Shop</title>
+ <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+ <style>
+ * { box-sizing: border-box; }
+ body { font-family: system-ui, -apple-system, sans-serif; background: #0f0f1a; color: #e0e0e0; margin: 0; }
+ header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00d4ff; }
+ h1 { color: #00d4ff; margin: 0; font-size: 1.8em; }
+ .subtitle { color: #888; font-size: 0.9em; margin-top: 5px; }
+ .auth-btn { background: linear-gradient(135deg, #e94560 0%, #c73e54 100%); color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: transform 0.2s; }
+ .auth-btn:hover { transform: scale(1.05); }
+ .container { max-width: 1400px; margin: 0 auto; padding: 30px 20px; }
+ .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px; }
+ .product { background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; overflow: hidden; border: 1px solid #2a2a4a; transition: transform 0.3s, box-shadow 0.3s; }
+ .product:hover { transform: translateY(-5px); box-shadow: 0 10px 40px rgba(0, 212, 255, 0.2); }
+ .product-header { background: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%); padding: 20px; border-bottom: 1px solid #2a2a4a; }
+ .product h2 { color: #00d4ff; margin: 0 0 8px 0; font-size: 1.4em; }
+ .product .short-desc { color: #aaa; margin: 0; font-size: 0.95em; }
+ .price-badge { background: linear-gradient(135deg, #4ecca3 0%, #3db892 100%); color: #0f0f1a; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 1.3em; display: inline-block; margin-top: 10px; }
+ .product-details { padding: 20px; }
+ .detail-section { margin-bottom: 15px; }
+ .detail-section h3 { color: #e94560; font-size: 0.85em; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 8px 0; }
+ .detail-section p, .detail-section ul { margin: 0; color: #ccc; font-size: 0.9em; line-height: 1.5; }
+ .detail-section ul { padding-left: 20px; }
+ .detail-section li { margin-bottom: 4px; }
+ .system-badge { background: #0f3460; padding: 6px 12px; border-radius: 6px; font-size: 0.85em; color: #4ecca3; display: inline-block; }
+ .req-code { background: #0a0a15; padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 0.85em; color: #00d4ff; word-break: break-all; }
+ .add-btn { background: linear-gradient(135deg, #e94560 0%, #c73e54 100%); color: white; padding: 14px 24px; border: none; border-radius: 8px; cursor: pointer; margin-top: 15px; width: 100%; font-size: 1em; font-weight: bold; transition: transform 0.2s; }
+ .add-btn:hover { transform: scale(1.02); }
+ #cart { position: fixed; bottom: 30px; right: 30px; background: linear-gradient(135deg, #e94560 0%, #c73e54 100%); padding: 18px 30px; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 25px rgba(233, 69, 96, 0.4); font-weight: bold; z-index: 1000; transition: transform 0.2s; }
+ #cart:hover { transform: scale(1.1); }
+ #cart-count { background: #fff; color: #e94560; padding: 2px 8px; border-radius: 10px; margin-left: 8px; font-size: 0.9em; }
+ #auth-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 2000; }
+ .modal-content { background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%); padding: 40px; border-radius: 16px; width: 350px; border: 1px solid #2a2a4a; }
+ .modal-content h2 { color: #00d4ff; margin: 0 0 20px 0; }
+ .modal-content input { width: 100%; padding: 14px; margin: 10px 0; background: #0a0a15; border: 1px solid #2a2a4a; color: white; border-radius: 8px; font-size: 1em; }
+ .modal-content input:focus { outline: none; border-color: #00d4ff; }
+ .modal-content .auth-btn { width: 100%; margin-top: 15px; }
+ .modal-content p { text-align: center; color: #888; cursor: pointer; margin-top: 15px; }
+ .modal-content p:hover { color: #00d4ff; }
+ .loading { text-align: center; padding: 60px; color: #888; font-size: 1.2em; }
+ .version { color: #666; font-size: 0.75em; margin-left: 10px; }
+ .support-badge { background: #4ecca3; color: #0f0f1a; padding: 3px 8px; border-radius: 4px; font-size: 0.75em; font-weight: bold; }
+ </style>
 </head>
 <body>
-    <h1>🤖 Susi AI - Server & Pi Tools (58 Produkte)</h1>
-    <div class="note">🔒 Nach Zahlung erhältst du Zugang zum privaten GitHub-Repository mit echtem Python-Code.</div>
-    <div class="product"><h2>Api Gateway</h2><span class="price">€4,99</span> <a class="btn" href="products/api-gateway.html">Details</a></div>
-    <div class="product"><h2>Api Rate Limiter</h2><span class="price">€4,99</span> <a class="btn" href="products/api-rate-limiter.html">Details</a></div>
-    <div class="product"><h2>Autobackup</h2><span class="price">€4,99</span> <a class="btn" href="products/autobackup.html">Details</a></div>
-    <div class="product"><h2>Autobackup Script</h2><span class="price">€4,99</span> <a class="btn" href="products/autobackup-script.html">Details</a></div>
-    <div class="product"><h2>Autorestarter</h2><span class="price">€4,99</span> <a class="btn" href="products/autorestarter.html">Details</a></div>
-    <div class="product"><h2>Autorestarter Script</h2><span class="price">€4,99</span> <a class="btn" href="products/autorestarter-script.html">Details</a></div>
-    <div class="product"><h2>Backup Rotator</h2><span class="price">€4,99</span> <a class="btn" href="products/backup-rotator.html">Details</a></div>
-    <div class="product"><h2>Cache Warmer</h2><span class="price">€4,99</span> <a class="btn" href="products/cache-warmer.html">Details</a></div>
-    <div class="product"><h2>Cloud Backup</h2><span class="price">€4,99</span> <a class="btn" href="products/cloud-backup.html">Details</a></div>
-    <div class="product"><h2>Cpu Alert</h2><span class="price">€4,99</span> <a class="btn" href="products/cpu-alert.html">Details</a></div>
-    <div class="product"><h2>Cron Manager</h2><span class="price">€4,99</span> <a class="btn" href="products/cron-manager.html">Details</a></div>
-    <div class="product"><h2>Cryptopricer</h2><span class="price">€4,99</span> <a class="btn" href="products/cryptopricer.html">Details</a></div>
-    <div class="product"><h2>Cryptopricer Script</h2><span class="price">€4,99</span> <a class="btn" href="products/cryptopricer-script.html">Details</a></div>
-    <div class="product"><h2>Database Backup</h2><span class="price">€4,99</span> <a class="btn" href="products/database-backup.html">Details</a></div>
-    <div class="product"><h2>Disk Cleaner</h2><span class="price">€4,99</span> <a class="btn" href="products/disk-cleaner.html">Details</a></div>
-    <div class="product"><h2>Disk Usage Alert</h2><span class="price">€4,99</span> <a class="btn" href="products/disk-usage-alert.html">Details</a></div>
-    <div class="product"><h2>Dns Checker</h2><span class="price">€4,99</span> <a class="btn" href="products/dns-checker.html">Details</a></div>
-    <div class="product"><h2>Docker Logs</h2><span class="price">€4,99</span> <a class="btn" href="products/docker-logs.html">Details</a></div>
-    <div class="product"><h2>Docker Manager</h2><span class="price">€4,99</span> <a class="btn" href="products/docker-manager.html">Details</a></div>
-    <div class="product"><h2>Dockerwatch</h2><span class="price">€4,99</span> <a class="btn" href="products/dockerwatch.html">Details</a></div>
-    <div class="product"><h2>Dockerwatch Script</h2><span class="price">€4,99</span> <a class="btn" href="products/dockerwatch-script.html">Details</a></div>
-    <div class="product"><h2>File Integrity</h2><span class="price">€4,99</span> <a class="btn" href="products/file-integrity.html">Details</a></div>
-    <div class="product"><h2>File Monitor</h2><span class="price">€4,99</span> <a class="btn" href="products/file-monitor.html">Details</a></div>
-    <div class="product"><h2>Firewall Manager</h2><span class="price">€4,99</span> <a class="btn" href="products/firewall-manager.html">Details</a></div>
-    <div class="product"><h2>Grafana Dashboard</h2><span class="price">€4,99</span> <a class="btn" href="products/grafana-dashboard.html">Details</a></div>
-    <div class="product"><h2>Healthcheck</h2><span class="price">€4,99</span> <a class="btn" href="products/healthcheck.html">Details</a></div>
-    <div class="product"><h2>Healthcheck Script</h2><span class="price">€4,99</span> <a class="btn" href="products/healthcheck-script.html">Details</a></div>
-    <div class="product"><h2>Log Aggregator</h2><span class="price">€4,99</span> <a class="btn" href="products/log-aggregator.html">Details</a></div>
-    <div class="product"><h2>Log Rotate</h2><span class="price">€4,99</span> <a class="btn" href="products/log-rotate.html">Details</a></div>
-    <div class="product"><h2>Logwatcher</h2><span class="price">€4,99</span> <a class="btn" href="products/logwatcher.html">Details</a></div>
-    <div class="product"><h2>Logwatcher Script</h2><span class="price">€4,99</span> <a class="btn" href="products/logwatcher-script.html">Details</a></div>
-    <div class="product"><h2>Mailer</h2><span class="price">€4,99</span> <a class="btn" href="products/mailer.html">Details</a></div>
-    <div class="product"><h2>Memory Monitor</h2><span class="price">€4,99</span> <a class="btn" href="products/memory-monitor.html">Details</a></div>
-    <div class="product"><h2>Metrics Collector</h2><span class="price">€4,99</span> <a class="btn" href="products/metrics-collector.html">Details</a></div>
-    <div class="product"><h2>Mongodb Backup</h2><span class="price">€4,99</span> <a class="btn" href="products/mongodb-backup.html">Details</a></div>
-    <div class="product"><h2>Mysql Monitor</h2><span class="price">€4,99</span> <a class="btn" href="products/mysql-monitor.html">Details</a></div>
-    <div class="product"><h2>Netwatch</h2><span class="price">€4,99</span> <a class="btn" href="products/netwatch.html">Details</a></div>
-    <div class="product"><h2>Netwatch Script</h2><span class="price">€4,99</span> <a class="btn" href="products/netwatch-script.html">Details</a></div>
-    <div class="product"><h2>Network Scanner</h2><span class="price">€4,99</span> <a class="btn" href="products/network-scanner.html">Details</a></div>
-    <div class="product"><h2>Network Stats</h2><span class="price">€4,99</span> <a class="btn" href="products/network-stats.html">Details</a></div>
-    <div class="product"><h2>Passgen</h2><span class="price">€4,99</span> <a class="btn" href="products/passgen.html">Details</a></div>
-    <div class="product"><h2>Passgen Script</h2><span class="price">€4,99</span> <a class="btn" href="products/passgen-script.html">Details</a></div>
-    <div class="product"><h2>Pi Starter Kit</h2><span class="price">€4,99</span> <a class="btn" href="products/pi-starter-kit.html">Details</a></div>
-    <div class="product"><h2>Pistats</h2><span class="price">€4,99</span> <a class="btn" href="products/pistats.html">Details</a></div>
-    <div class="product"><h2>Pistats Script</h2><span class="price">€4,99</span> <a class="btn" href="products/pistats-script.html">Details</a></div>
-    <div class="product"><h2>Port Scanner</h2><span class="price">€4,99</span> <a class="btn" href="products/port-scanner.html">Details</a></div>
-    <div class="product"><h2>Postgres Monitor</h2><span class="price">€4,99</span> <a class="btn" href="products/postgres-monitor.html">Details</a></div>
-    <div class="product"><h2>Process Killer</h2><span class="price">€4,99</span> <a class="btn" href="products/process-killer.html">Details</a></div>
-    <div class="product"><h2>Process Manager</h2><span class="price">€4,99</span> <a class="btn" href="products/process-manager.html">Details</a></div>
-    <div class="product"><h2>Prometheus Exporter</h2><span class="price">€4,99</span> <a class="btn" href="products/prometheus-exporter.html">Details</a></div>
-    <div class="product"><h2>Queue Monitor</h2><span class="price">€4,99</span> <a class="btn" href="products/queue-monitor.html">Details</a></div>
-    <div class="product"><h2>Redis Monitor</h2><span class="price">€4,99</span> <a class="btn" href="products/redis-monitor.html">Details</a></div>
-    <div class="product"><h2>Serverwatch</h2><span class="price">€4,99</span> <a class="btn" href="products/serverwatch.html">Details</a></div>
-    <div class="product"><h2>Serverwatch Script</h2><span class="price">€4,99</span> <a class="btn" href="products/serverwatch-script.html">Details</a></div>
-    <div class="product"><h2>Service Checker</h2><span class="price">€4,99</span> <a class="btn" href="products/service-checker.html">Details</a></div>
-    <div class="product"><h2>Service Monitor</h2><span class="price">€4,99</span> <a class="btn" href="products/service-monitor.html">Details</a></div>
-    <div class="product"><h2>Service Restarter</h2><span class="price">€4,99</span> <a class="btn" href="products/service-restarter.html">Details</a></div>
-    <div class="product"><h2>Ssh Hardener</h2><span class="price">€4,99</span> <a class="btn" href="products/ssh-hardener.html">Details</a></div>
-    <div class="product"><h2>Ssl Checker</h2><span class="price">€4,99</span> <a class="btn" href="products/ssl-checker.html">Details</a></div>
-    <div class="product"><h2>Ssl Monitor</h2><span class="price">€4,99</span> <a class="btn" href="products/ssl-monitor.html">Details</a></div>
-    <div class="product"><h2>Susibot</h2><span class="price">€4,99</span> <a class="btn" href="products/susibot.html">Details</a></div>
-    <div class="product"><h2>System Info</h2><span class="price">€4,99</span> <a class="btn" href="products/system-info.html">Details</a></div>
-    <div class="product"><h2>Syswatch</h2><span class="price">€4,99</span> <a class="btn" href="products/syswatch.html">Details</a></div>
-    <div class="product"><h2>Syswatch Script</h2><span class="price">€4,99</span> <a class="btn" href="products/syswatch-script.html">Details</a></div>
-    <div class="product"><h2>Task Scheduler</h2><span class="price">€4,99</span> <a class="btn" href="products/task-scheduler.html">Details</a></div>
-    <div class="product"><h2>Traffic Monitor</h2><span class="price">€4,99</span> <a class="btn" href="products/traffic-monitor.html">Details</a></div>
-    <div class="product"><h2>User Audit</h2><span class="price">€4,99</span> <a class="btn" href="products/user-audit.html">Details</a></div>
-    <div class="product"><h2>User Manager</h2><span class="price">€4,99</span> <a class="btn" href="products/user-manager.html">Details</a></div>
-    <div class="product"><h2>Webhook Listener</h2><span class="price">€4,99</span> <a class="btn" href="products/webhook-listener.html">Details</a></div>
-    <div class="product"><h2>Website Monitor</h2><span class="price">€4,99</span> <a class="btn" href="products/website-monitor.html">Details</a></div>
-    <hr>
-    <h2>💳 Zahlungsmöglichkeiten</h2>
-    <h3>💳 Crypto (sofort)</h3>
-<p><strong>ETH / USDC / USDT / DAI / und mehr:</strong></p>
-    <p class="wallet">0x6B332179b0FedD74696A689468aB0ec861b501C</p>
-    <p><strong>BTC:</strong></p>
-    <p class="wallet">bc1q4qf0dj8eh9qylawjrtu90sngap57hq5fjs55vk</p>
-    <p><strong>SOL:</strong></p>
-    <p class="wallet">4ZGDUxWSbHsSuABMEXmjdoprxfqNSeP3Ropy1DucQUo4</p>
-<h3>💳 PayPal</h3>
-<p>Kontaktiere uns für PayPal-Zahlung: <a href="https://t.me/EdkuAnko">@EdkuAnko</a></p>
+ <header>
+ <div>
+   <h1>🤖 Susi AI Tools</h1>
+   <div class="subtitle">Professionelle Tools für Server & Raspberry Pi</div>
+ </div>
+ <div id="user-info">
+   <button class="auth-btn" onclick="showAuth()">Login / Registrieren</button>
+ </div>
+ </header>
+ 
+ <div class="container">
+ <div class="loading" id="loading">Lade Produkte...</div>
+ <div class="product-grid" id="products"></div>
+ </div>
+ 
+ <div id="cart" onclick="showCart()"> 🛒 Warenkorb (<span id="cart-count">0</span>)</div>
+ 
+ <div id="auth-modal">
+ <div class="modal-content">
+   <h2 id="auth-title">Login</h2>
+   <input type="email" id="email" placeholder="Email">
+   <input type="password" id="password" placeholder="Passwort">
+   <button class="auth-btn" onclick="handleAuth()">Absenden</button>
+   <p onclick="toggleAuth()">oder registrieren</p>
+   <p onclick="document.getElementById('auth-modal').style.display='none'">Schließen</p>
+ </div>
+ </div>
 
-<h3>💳 Kreditkarte</h3>
-<p>Bald verfügbar via NOWPayments</p>
+ <script>
+ // Produkte mit ausführlichen Details
+ const products = [
+   {
+     id: "serverwatch",
+     name: "ServerWatch",
+     price: 14.99,
+     desc: "Umfassendes Server-Monitoring-Tool",
+     features: [
+       "Echtzeit CPU-, RAM- und Disk-Überwachung",
+       "Benachrichtigungen bei kritischen Werten",
+       "Web-Dashboard mit Grafiken",
+       "Historisches Daten-Logging"
+     ],
+     system: "Linux (Ubuntu, Debian, CentOS, Raspberry Pi OS)",
+     requirements: "Python 3.8+, 100MB RAM, Netzwerkzugang",
+     installation: "pip install serverwatch",
+     support: "Email-Support inklusive",
+     version: "1.0.0"
+   },
+   {
+     id: "pistats",
+     name: "PiStats",
+     price: 4.99,
+     desc: "Raspberry Pi System-Monitoring",
+     features: [
+       "CPU-Temperatur und -Takt",
+       "RAM- und Speichernutzung",
+       "Network Traffic Analyse",
+       "GPIO-Status Überwachung",
+       "Web-Interface mit Live-Daten"
+     ],
+     system: "Raspberry Pi (alle Modelle)",
+     requirements: "Python 3.5+, Raspberry Pi",
+     installation: "curl -s https://raw.githubusercontent.com/susipi4u/pistats/install.sh | bash",
+     support: "Community-Support",
+     version: "2.1.0"
+   },
+   {
+     id: "autobackup",
+     name: "AutoBackup",
+     price: 4.99,
+     desc: "Automatische Backup-Lösung",
+     features: [
+       "Planbare Backup-Zeiten",
+       "Incremental Backups",
+       "Remote-Backup zu S3/Google Drive",
+       "Komprimierung und Verschlüsselung",
+       "Backup-Verification"
+     ],
+     system: "Linux, macOS, BSD",
+     requirements: "Python 3.6+, crontab",
+     installation: "pip install autobackup-pro",
+     support: "Email-Support",
+     version: "3.0.1"
+   },
+   {
+     id: "healthcheck",
+     name: "HealthCheck",
+     price: 9.99,
+     desc: "Server Health Monitoring Suite",
+     features: [
+       "Service-Status Prüfung (HTTP, SSH, MySQL, etc.)",
+       "SSL-Zertifikat Monitoring",
+       "DNS-Checker",
+       "Port-Scanner",
+       "Automatisierte Remediation-Scripts"
+     ],
+     system: "Linux Server, VPS, Cloud-Instanzen",
+     requirements: "Python 3.8+, Root-Zugriff",
+     installation: "pip install healthcheck-pro",
+     support: "Priority Email-Support",
+     version: "1.5.0"
+   },
+   {
+     id: "docker-manager",
+     name: "Docker Manager",
+     price: 9.99,
+     desc: "Docker Container Management",
+     features: [
+       "Container-Überwachung",
+       "Auto-Restart bei Ausfällen",
+       "Resource-Limit Management",
+       "Log-Aggregation",
+       "Backup und Restore von Volumes"
+     ],
+     system: "Linux mit Docker",
+     requirements: "Docker 20.10+, Python 3.8+",
+     installation: "docker run -d -v /var/run/docker.sock susipi4u/docker-manager",
+     support: "Email + Docker Hub",
+     version: "2.0.0"
+   },
+   {
+     id: "network-scanner",
+     name: "Network Scanner",
+     price: 7.99,
+     desc: "Netzwerk-Scanner und Analyzer",
+     features: [
+       "IP-Scan im lokalen Netzwerk",
+       "Offene Ports erkennen",
+       "Gerätetyp-Erkennung",
+       "Netzwerk-Latenz Monitoring",
+       "Subnetz-Analyse"
+     ],
+     system: "Linux, macOS, Windows (WSL)",
+     requirements: "Python 3.6+, Nmap (optional)",
+     installation: "pip install net-scan-pro",
+     support: "Community-Support",
+     version: "1.2.0"
+   },
+   {
+     id: "logwatcher",
+     name: "LogWatcher",
+     price: 6.99,
+     desc: "Intelligent Log Monitoring",
+     features: [
+       "Echtzeit Log-Überwachung",
+       "Pattern-Matching und Alerts",
+       "Fehler-Erkennung und Kategorisierung",
+       "Log-Rotation Support",
+       "Export zu Elasticsearch"
+     ],
+     system: "Linux Server, Docker",
+     requirements: "Python 3.7+",
+     installation: "pip install logwatcher-pro",
+     support: "Email-Support",
+     version: "1.8.0"
+   },
+   {
+     id: "passgen",
+     name: "PassGen Pro",
+     price: 4.99,
+     desc: "Professioneller Passwort-Generator",
+     features: [
+       "Kryptographisch sichere Zufallszahlen",
+       "Anpassbare Komplexität",
+       "Passwort-Stärke-Analyse",
+       "CLI und Web-Interface",
+       "Passwort-Vault Integration"
+     ],
+     system: "Cross-Platform (Linux, macOS, Windows)",
+     requirements: "Python 3.6+",
+     installation: "pip install passgen-pro",
+     support: "Community-Support",
+     version: "2.0.0"
+   }
+ ];
+
+ // Firebase Konfiguration
+ const firebaseConfig = {
+   apiKey: "AIzaSyAyv3r-TC6cNuk9Dp655K79h2K4L-9tZAs",
+   authDomain: "susibot-shop.firebaseapp.com",
+   projectId: "susibot-shop",
+   storageBucket: "susibot-shop.firebasestorage.app",
+   messagingSenderId: "171492719283",
+   appId: "1:171492719283:web:2f2053d340573d1f594ec6"
+ };
+
+ // Firebase initialisieren
+ try {
+   firebase.initializeApp(firebaseConfig);
+   var auth = firebase.auth();
+   var db = firebase.firestore();
+ } catch(e) {
+   console.log('Firebase nicht verfügbar, nutze lokale Daten');
+ }
+
+ let cart = [];
+ let isRegister = false;
+
+ function renderProducts() {
+   const grid = document.getElementById('products');
+   grid.innerHTML = products.map(p => `
+     <div class="product">
+       <div class="product-header">
+         <h2>${p.name} <span class="version">v${p.version}</span></h2>
+         <p class="short-desc">${p.desc}</p>
+         <div class="price-badge">€${p.price}</div>
+       </div>
+       <div class="product-details">
+         <div class="detail-section">
+           <h3>Features</h3>
+           <ul>${p.features.map(f => `<li>${f}</li>`).join('')}</ul>
+         </div>
+         <div class="detail-section">
+           <h3>System</h3>
+           <span class="system-badge">${p.system}</span>
+         </div>
+         <div class="detail-section">
+           <h3>Installation</h3>
+           <div class="req-code">${p.installation}</div>
+         </div>
+         <div class="detail-section">
+           <h3>Support</h3>
+           <span class="support-badge">${p.support}</span>
+         </div>
+         <button class="add-btn" onclick="addToCart('${p.id}')">In den Warenkorb</button>
+       </div>
+     </div>
+   `).join('');
+ }
+
+ function addToCart(id) {
+   const product = products.find(p => p.id === id);
+   cart.push(product);
+   document.getElementById('cart-count').innerText = cart.length;
+ }
+
+ function showAuth() {
+   document.getElementById('auth-modal').style.display = 'flex';
+ }
+
+ function toggleAuth() {
+   isRegister = !isRegister;
+   document.getElementById('auth-title').innerText = isRegister ? 'Registrieren' : 'Login';
+ }
+
+ async function handleAuth() {
+   const email = document.getElementById('email').value;
+   const password = document.getElementById('password').value;
+   
+   if (typeof auth === 'undefined') {
+     alert('Firebase nicht verbunden - Demo Modus');
+     document.getElementById('auth-modal').style.display = 'none';
+     return;
+   }
+   
+   try {
+     if (isRegister) {
+       await auth.createUserWithEmailAndPassword(email, password);
+       alert('Registrierung erfolgreich! ✓');
+     } else {
+       await auth.signInWithEmailAndPassword(email, password);
+       alert('Login erfolgreich! ✓');
+     }
+     document.getElementById('auth-modal').style.display = 'none';
+     updateUserInfo();
+   } catch (error) {
+     alert('Fehler: ' + error.message);
+   }
+ }
+
+ function updateUserInfo() {
+   const user = auth.currentUser;
+   if (user) {
+     document.getElementById('user-info').innerHTML = 
+       `<span style="color:#4ecca3;margin-right:10px;">Hallo, ${user.email}!</span> <button class="auth-btn" onclick="logout()">Logout</button>`;
+   }
+ }
+
+ function logout() {
+   auth.signOut();
+   document.getElementById('user-info').innerHTML = 
+     '<button class="auth-btn" onclick="showAuth()">Login / Registrieren</button>';
+ }
+
+ function showCart() {
+   if (cart.length === 0) {
+     alert('Warenkorb ist leer!');
+     return;
+   }
+   const total = cart.reduce((sum, p) => sum + p.price, 0);
+   alert('Warenkorb: ' + cart.map(p => p.name).join(', ') + '\n\nSumme: €' + total.toFixed(2) + '\n\nZahlung erfolgt nach Bestellung per Crypto oder PayPal.');
+ }
+
+ // Auth-Status prüfen
+ if (typeof auth !== 'undefined') {
+   auth.onAuthStateChanged(user => {
+     if (user) updateUserInfo();
+   });
+ }
+
+ // Produkte laden
+ document.getElementById('loading').style.display = 'none';
+ renderProducts();
+ </script>
 </body>
 </html>
-<!-- updated Sa 21. Mär 19:48:36 CET 2026 -->
