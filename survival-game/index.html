@@ -319,7 +319,7 @@ function openExpedition() {
     const used = s.expeditionsToday || 0;
     const d = document.createElement('div');
     d.className = 'survivor-checkbox' + (onExp || used >= 2 ? ' disabled' : '');
-    d.textContent = onExp ? s.name + ' 📍' : s.name + ' (' + s.skill + ') ' + used + '/2';
+    d.textContent = onExp ? s.name + ' 📍' : s.name + ' (' + s.skill + ') ' + used + '/2'; d.onclick = function() { toggleSurvivorForExpedition(i, d); };
     if (!onExp && used < 2) d.onclick = () => toggleSurvivorForExpedition(i, d);
     sc.appendChild(d);
   });
