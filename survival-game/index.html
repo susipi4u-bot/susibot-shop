@@ -145,11 +145,11 @@ workshop: { name: 'Workshop', icon: '🔧', desc: 'Crafting', cost: { materials:
 storage: { name: 'Storage', icon: '🏪', desc: '+50 cap each', cost: { materials: 15 }, produce: null }
 };
 const LOCATIONS = [
-{ name: 'Supermarket', icon: '🏪', risk: 'low', food: 15, water: 10, materials: 5, meds: 2 },
-{ name: 'Abandoned Factory', icon: '🏭', risk: 'medium', materials: 20, energy: 10, meds: 3 },
-{ name: 'Hospital', icon: '🏥', risk: 'high', meds: 15, materials: 5 },
-{ name: 'Power Plant', icon: '⚡', risk: 'high', energy: 25, materials: 10 },
-{ name: 'Residential', icon: '🏠', risk: 'low', food: 8, water: 8, materials: 8, meds: 1 }
+{ name: 'Supermarket', icon: '🏪', risk: 'low', hours: 2, food: 15, x: 80, y: 80, water: 10, materials: 5, meds: 2 },
+{ name: 'Abandoned Factory', icon: '🏭', risk: 'medium', hours: 4, materials: 20, x: 20, y: 30, energy: 10, meds: 3 },
+{ name: 'Hospital', icon: '🏥', risk: 'high', hours: 3, meds: 15, x: 30, y: 70, materials: 5 },
+{ name: 'Power Plant', icon: '⚡', risk: 'high', hours: 5, energy: 25, x: 70, y: 25, materials: 10 },
+{ name: 'Residential', icon: '🏠', risk: 'low', hours: 1, food: 8, water: 8, materials: 8, meds: 1, x: 50, y: 50 }
 ];
 const NAMES = ['Alex', 'Sam', 'Jordan', 'Casey', 'Riley', 'Morgan', 'Taylor', 'Quinn', 'Avery', 'Blake', 'Drew', 'Skyler', 'Reese', 'Phoenix', 'Sage'];
 const SKILLS = ['Scavenging', 'Combat', 'Medical', 'Technical'];
