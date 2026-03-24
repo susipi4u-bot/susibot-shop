@@ -330,22 +330,6 @@ function openExpedition() {
 
 
 // SPEED AND TIME
-function realTimeTick() {
-  const now = Date.now();
-  const elapsed = (now - gameState.lastTick) / 1000;
-  const target = 60 / (gameState.speed || 1);
-  if (elapsed >= target) {
-    gameState.gameTime += Math.floor(elapsed / target);
-    gameState.lastTick = now;
-    if (gameState.gameTime >= 24) {
-      gameState.gameTime = 0;
-      nextDay();
-    }
-    updateTimeDisplay();
-    checkExpeditions();
-  }
-}
-
 function updateTimeDisplay() {
   const t = document.getElementById('gameTime');
   if (t) t.textContent = (gameState.gameTime || 0).toString().padStart(2, '0') + ':00';
@@ -433,20 +417,6 @@ function completeExpedition(exp) {
   render();
   saveGame();
 }
-function realTimeTick() {
-const now = Date.now();
-const elapsed = (now - gameState.lastTick) / 1000;
-if (elapsed >= 1) {
-gameState.gameTime += Math.floor(elapsed);
-gameState.lastTick = now;
-if (gameState.gameTime >= 24) {
-gameState.gameTime = 0;
-nextDay();
-}
-updateTimeDisplay();
-}
-}
-function updateTimeDisplay() {
 const timeEl = document.getElementById('gameTime');
 if (timeEl) timeEl.textContent = gameState.gameTime.toString().padStart(2, '0') + ':00';
 }
