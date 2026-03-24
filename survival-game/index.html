@@ -182,6 +182,128 @@ log('Started with ' + startCount + ' survivor(s).', 'info');
 setInterval(realTimeTick, 1000);
 render();
 log('Welcome to Wasteland Survivors. Build your colony and survive!', 'info');
+
+// REAL TIME SYSTEM
+function realTimeTick() {
+  const now = Date.now();
+  const elapsed = (now - gameState.lastTick) / 1000;
+  const target = 60 / gameState.speed;
+  if (elapsed >= target) {
+    gameState.gameTime += Math.floor(elapsed / target);
+    gameState.lastTick = now;
+    if (gameState.gameTime >= 24) {
+      gameState.gameTime = 0;
+      nextDay();
+    }
+    updateTimeDisplay();
+    checkExpeditions();
+  }
+}
+
+function updateTimeDisplay() {
+  const t = document.getElementById('gameTime');
+  if (t) t.textContent = gameState.gameTime.toString().padStart(2,'0') + ':00';
+  const s = document.getElementById('speedDisplay');
+  if (s) s.textContent = gameState.speed + 'x';
+}
+
+function setSpeed(mult) {
+  gameState.speed = mult;
+  gameState.lastTick = Date.now();
+  updateTimeDisplay();
+  log('Speed: ' + mult + 'x', 'info');
+}
+
+// EXPEDITION SYSTEM
+function checkExpeditions() {
+  if (!gameState.activeExpeditions) return;
+  const now = Date.now();
+  gameState.activeExpeditions = gameState.activeExpeditions.filter(exp => {
+    if (now >= exp.returnTime) {
+      completeExpedition(exp);
+      return false;
+    }
+    return true;
+  });
+}
+
+function completeExpedition(exp) {
+  const loc = exp.location;
+  const success = Math.random() < 0.7;
+  if (success) {
+    let loot = [];
+    for (let [k, v] of Object.entries(loc)) {
+      if (['food','water','energy','materials','meds'].includes(k) && v > 0) {
+        const amount = Math.floor(v * (0.5 + Math.random() * 0.5));
+        if (amount > 0) {
+          gameState.resources[k] = (gameState.resources[k] || 0) + amount;
+          loot.push(k + ':+' + amount);
+        }
+      }
+    }
+    log('Expedition returned! ' + loot.join(' '), 'success');
+  } else {
+    for (let idx of exp.survivorIds) {
+      if (gameState.survivors[idx]) gameState.survivors[idx].health -= 15;
+    }
+    log('Expedition failed! Injuries.', 'danger');
+  }
+  checkSurvival();
+  render();
+  saveGame();
+}
+
+function renderMap() {
+  const c = document.getElementById('mapContainer');
+  c.innerHTML = '<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:2rem;">🏕️<br><span style="font-size:0.6rem;color:var(--accent)">BASE</span></div>';
+  LOCATIONS.forEach((loc, i) => {
+    const d = document.createElement('div');
+    d.style.cssText = 'position:absolute;left:' + loc.x + '%;top:' + loc.y + '%;transform:translate(-50%,-50%);cursor:pointer;font-size:1.8rem;text-align:center;';
+    d.innerHTML = loc.icon + '<br><span style="font-size:0.5rem;color:' + (loc.risk==='high'?'var(--danger)':loc.risk==='medium'?'var(--warning)':'var(--accent)') + '">' + loc.name + '</span>';
+    d.onclick = () => selectLocation(loc);
+    c.appendChild(d);
+    const line = document.createElement('div');
+    const dist = Math.sqrt(Math.pow(loc.x-50,2) + Math.pow(loc.y-50,2));
+    const angle = Math.atan2(loc.y-50, loc.x-50) * 180 / Math.PI;
+    line.style.cssText = 'position:absolute;left:50%;top:50%;width:' + dist + '%;height:2px;background:#333;transform-origin:left;transform:rotate(' + angle + 'deg);';
+    c.insertBefore(line, c.firstChild);
+  });
+}
+
+function selectLocation(loc) {
+  gameState.selectedLocation = loc;
+  const info = document.getElementById('locationInfo');
+  info.style.display = 'block';
+  document.getElementById('locName').textContent = loc.icon + ' ' + loc.name;
+  const mins = (loc.hours * 60 / gameState.speed / 60).toFixed(1);
+  document.getElementById('locDetails').innerHTML = '⏱️ ' + loc.hours + 'h (' + mins + 'min) | Risk: ' + loc.risk;
+  const btn = document.getElementById('departBtn');
+  btn.disabled = gameState.selectedForExpedition.length === 0;
+  btn.textContent = gameState.selectedForExpedition.length === 0 ? 'SELECT SURVIVORS' : 'DEPART';
+}
+
+function openExpedition() {
+  if (gameState.survivors.length === 0) { log('No survivors!', 'warning'); return; }
+  gameState.selectedLocation = null;
+  document.getElementById('expeditionPanel').classList.add('active');
+  document.getElementById('locationInfo').style.display = 'none';
+  document.getElementById('departBtn').disabled = true;
+  document.getElementById('departBtn').textContent = 'SELECT LOCATION';
+  
+  const sc = document.getElementById('expeditionSurvivors');
+  sc.innerHTML = '';
+  gameState.survivors.forEach((s, i) => {
+    const onExp = gameState.activeExpeditions && gameState.activeExpeditions.some(e => e.survivorIds.includes(i));
+    const used = s.expeditionsToday || 0;
+    const d = document.createElement('div');
+    d.className = 'survivor-checkbox' + (onExp || used >= 2 ? ' disabled' : '');
+    d.textContent = onExp ? s.name + ' 📍' : s.name + ' (' + s.skill + ') ' + used + '/2';
+    if (!onExp && used < 2) d.onclick = () => toggleSurvivorForExpedition(i, d);
+    sc.appendChild(d);
+  });
+  renderMap();
+}
+
 }
 
 
