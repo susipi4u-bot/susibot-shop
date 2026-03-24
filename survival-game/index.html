@@ -106,7 +106,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 <div class="actions">
 <button class="primary" onclick="nextDay()">NEXT DAY ⏭️</button>
 <button onclick="openExpedition()">🛸 EXPEDITION</button>
-<button onclick="checkGate()">🚪 CHECK GATE</button>
+
 <button onclick="saveGame()">💾 SAVE</button>
     <button onclick="restartGame()" style="color:#ff3333;">🔄 NEW GAME</button>
 </div>
@@ -286,6 +286,23 @@ function openExpedition() {
   if (gameState.survivors.length === 0) { log('No survivors!', 'warning'); return; }
   gameState.selectedLocation = null;
   document.getElementById('expeditionPanel').classList.add('active');
+  document.getElementById('mapContainer').innerHTML = '';
+  // Draw base
+  document.getElementById('mapContainer').innerHTML = '<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:2rem;">🏕️<br><span style="font-size:0.6rem;color:var(--accent)">BASE</span></div>';
+  // Draw locations
+  LOCATIONS.forEach(loc => {
+    const div = document.createElement('div');
+    div.style.cssText = 'position:absolute;left:'+loc.x+'%;top:'+loc.y+'%;transform:translate(-50%,-50%);cursor:pointer;font-size:1.6rem;';
+    div.innerHTML = loc.icon + '<br><span style="font-size:0.5rem;color:'+(loc.risk==='high'?'red':loc.risk==='medium'?'orange':'lime')+'">'+loc.name+'</span>';
+    div.onclick = () => pickLocation(loc);
+    document.getElementById('mapContainer').appendChild(div);
+    // Line
+    const line = document.createElement('div');
+    const dist = Math.sqrt(Math.pow(loc.x-50,2) + Math.pow(loc.y-50,2));
+    const angle = Math.atan2(loc.y-50, loc.x-50) * 180/Math.PI;
+    line.style.cssText = 'position:absolute;left:50%;top:50%;width:'+dist+'%;height:2px;background:#444;transform-origin:left;transform:rotate('+angle+'deg);';
+    document.getElementById('mapContainer').insertBefore(line, document.getElementById('mapContainer').firstChild);
+  });
   document.getElementById('locationInfo').style.display = 'none';
   document.getElementById('departBtn').disabled = true;
   document.getElementById('departBtn').textContent = 'SELECT LOCATION';
@@ -636,6 +653,23 @@ log('No survivors available for expedition!', 'warning');
 return;
 }
 document.getElementById('expeditionPanel').classList.add('active');
+  document.getElementById('mapContainer').innerHTML = '';
+  // Draw base
+  document.getElementById('mapContainer').innerHTML = '<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:2rem;">🏕️<br><span style="font-size:0.6rem;color:var(--accent)">BASE</span></div>';
+  // Draw locations
+  LOCATIONS.forEach(loc => {
+    const div = document.createElement('div');
+    div.style.cssText = 'position:absolute;left:'+loc.x+'%;top:'+loc.y+'%;transform:translate(-50%,-50%);cursor:pointer;font-size:1.6rem;';
+    div.innerHTML = loc.icon + '<br><span style="font-size:0.5rem;color:'+(loc.risk==='high'?'red':loc.risk==='medium'?'orange':'lime')+'">'+loc.name+'</span>';
+    div.onclick = () => pickLocation(loc);
+    document.getElementById('mapContainer').appendChild(div);
+    // Line
+    const line = document.createElement('div');
+    const dist = Math.sqrt(Math.pow(loc.x-50,2) + Math.pow(loc.y-50,2));
+    const angle = Math.atan2(loc.y-50, loc.x-50) * 180/Math.PI;
+    line.style.cssText = 'position:absolute;left:50%;top:50%;width:'+dist+'%;height:2px;background:#444;transform-origin:left;transform:rotate('+angle+'deg);';
+    document.getElementById('mapContainer').insertBefore(line, document.getElementById('mapContainer').firstChild);
+  });
 const survContainer = document.getElementById('expeditionSurvivors');
 survContainer.innerHTML = '';
 for (let i = 0; i < gameState.survivors.length; i++) {
@@ -665,6 +699,17 @@ div.innerHTML = '<div class="location-header"><span class="location-name">' + lo
 locContainer.appendChild(div);
 }
 }
+function pickLocation(loc) {
+  gameState.selectedLocation = loc;
+  document.getElementById('locName').textContent = loc.icon + ' ' + loc.name;
+  const mins = (loc.hours * 60 / gameState.speed / 60).toFixed(1);
+  document.getElementById('locDetails').innerHTML = '⏱️ ' + loc.hours + 'h (' + mins + 'min real) | Risk: ' + loc.risk;
+  document.getElementById('locDetails').style.display = 'block';
+  const btn = document.getElementById('departBtn');
+  btn.disabled = gameState.selectedForExpedition.length === 0;
+  btn.textContent = gameState.selectedForExpedition.length === 0 ? 'SELECT SURVIVORS' : 'DEPART TO ' + loc.name.toUpperCase();
+}
+
 function toggleSurvivorForExpedition(index, el) {
 const idx = gameState.selectedForExpedition.indexOf(index);
 if (idx >= 0) {
@@ -683,7 +728,9 @@ gameState.selectedForExpedition = [];
 }
 function startExpedition() {
 if (gameState.selectedForExpedition.length === 0) {
-log('Select at least one survivor!', 'warning');
+if (!gameState.selectedLocation) { log('Click a location on the map!', 'warning'); return; }
+  if (gameState.selectedForExpedition.length === 0) { log('Select survivors first!', 'warning'); return; }
+  const location = gameState.selectedLocation;
 return;
 }
 // Check expedition limit
@@ -707,7 +754,15 @@ for (let idx of gameState.selectedForExpedition) {
 gameState.onExpedition.push(idx);
 gameState.survivors[idx].expeditionsToday = (gameState.survivors[idx].expeditionsToday || 0) + 1;
 }
-log('Expedition to ' + location.name + ' departed with ' + gameState.selectedForExpedition.length + ' survivors.', 'info');
+const travelMs = location.hours * 60000 / gameState.speed;
+  gameState.activeExpeditions.push({survivorIds: [...gameState.selectedForExpedition], location: location, returnTime: Date.now() + travelMs});
+  gameState.selectedForExpedition.forEach(i => { gameState.survivors[i].expeditionsToday = (gameState.survivors[i].expeditionsToday||0) + 1; });
+  gameState.resources.energy -= gameState.selectedForExpedition.length * 3;
+  log('📍 Expedition to ' + location.name + ' departed! Returns in ' + (travelMs/60000).toFixed(1) + ' min.', 'info');
+  closeExpedition();
+  render();
+  saveGame();
+  return;
 let successChance = 0.7;
 if (location.risk === 'high') successChance = 0.4;
 if (location.risk === 'medium') successChance = 0.6;
